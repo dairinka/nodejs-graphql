@@ -1,10 +1,10 @@
-import { GraphQLList, GraphQLObjectType } from 'graphql';
+import { GraphQLList, GraphQLObjectType, GraphQLResolveInfo } from 'graphql';
 import { MemberType } from './shemas/MemberType.js';
 import { Post } from './shemas/Post.js';
 import { Profile } from './shemas/Profile.js';
 import { User } from './shemas/User.js';
 import { MemberTypeId, gqlId } from './types/gqlTypes.js';
-import { Context, MemberTypeIdType } from './types/types.js';
+import { Context, IUser, MemberTypeIdType } from './types/types.js';
 
 export const Query = new GraphQLObjectType({
   name: 'Query',
@@ -27,15 +27,15 @@ export const Query = new GraphQLObjectType({
     },
     users: {
       type: new GraphQLList(User),
-      resolve: async (_source, _args, { db }: Context) => {
-        console.log('/// query usersss');
-        console.log('resolve users', db);
-        try {
-          return await db.user.findMany();
-        } catch (err) {
-          console.log(err);
-        }
-      },
+      // resolve: async (_source, _args, { db }: Context) => {
+      //   console.log('/// query usersss');
+      //   console.log('resolve users', db);
+      //   // try {
+      //   //   return await db.user.findMany();
+      //   // } catch (err) {
+      //   //   console.log(err);
+      //   // }
+      // },
     },
     memberType: {
       type: MemberType,
