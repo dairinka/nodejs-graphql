@@ -6,9 +6,9 @@ export const Profile = new GraphQLObjectType({
   name: 'Profile',
   fields: () => ({
     id: { type: gqlId },
-    userId: { type: gqlId },
+    // userId: { type: gqlId },
     isMale: { type: gqlBoolean },
-    memberTypeId: { type: MemberTypeId },
+    // memberTypeId: { type: MemberTypeId },
     yearOfBirth: { type: gqlInt },
   }),
 });

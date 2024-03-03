@@ -2,7 +2,7 @@ import { GraphQLObjectType } from 'graphql';
 import { MemberTypeId, gqlFloat, gqlInt } from '../types/types.js';
 
 export const MemberType = new GraphQLObjectType({
-  name: 'MemberTypes',
+  name: 'MemberType',
   fields: () => ({
     id: {
       type: MemberTypeId,

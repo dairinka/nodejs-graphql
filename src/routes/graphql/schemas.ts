@@ -5,7 +5,7 @@ import { UUIDType } from './types/uuid.js';
 import { MemberType } from './shemas/MemberType.js';
 import { Post } from './shemas/Post.js';
 import { Profile } from './shemas/Profile.js';
-import { gqlId } from './types/types.js';
+import { MemberTypeId, gqlId } from './types/types.js';
 
 export const gqlResponseSchema = Type.Partial(
   Type.Object({
@@ -26,7 +26,7 @@ export const createGqlResponseSchema = {
   ),
 };
 
-export const schema = new GraphQLSchema({
+export const commonSchema = new GraphQLSchema({
   query: new GraphQLObjectType({
     name: 'Query',
     fields: {
@@ -42,7 +42,7 @@ export const schema = new GraphQLSchema({
       memberType: {
         type: MemberType,
         args: {
-          id: { type: gqlId },
+          id: { type: MemberTypeId },
         },
       },
       memberTypes: {

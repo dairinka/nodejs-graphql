@@ -1,5 +1,5 @@
 import { FastifyPluginAsyncTypebox } from '@fastify/type-provider-typebox';
-import { createGqlResponseSchema, gqlResponseSchema, schema } from './schemas.js';
+import { createGqlResponseSchema, gqlResponseSchema, commonSchema } from './schemas.js';
 import { graphql, validate, parse } from 'graphql';
 import depthLimit from 'graphql-depth-limit';
 const DEPTHLIMIT = 5;
@@ -21,14 +21,18 @@ const plugin: FastifyPluginAsyncTypebox = async (fastify) => {
     // variableValues?: Maybe<{
     //   readonly [variable: string]: unknown;
     // }>;
-    async handler({ body }) {
-      const err = validate(schema, parse(body.query), [depthLimit(DEPTHLIMIT)]);
-      if (Array.isArray(err) && err.length > 0) return { errors: err };
+    async handler(req) {
+      const err = validate(commonSchema, parse(req.body.query), [depthLimit(DEPTHLIMIT)]);
+      //if (Array.isArray(err) && err.length > 0) return { errors: err };
+      //console.log('schema', schema);
+      console.log('req.body.query', req.body.query);
+      console.log('err', err);
       const res = await graphql({
-        schema,
-        source: body.query,
-        variableValues: body.variables,
+        schema: commonSchema,
+        source: req.body.query,
+        variableValues: req.body.variables,
       });
+      console.log('response', res);
       return res;
     },
   });
