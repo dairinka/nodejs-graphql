@@ -1,6 +1,6 @@
 import { GraphQLObjectType } from 'graphql';
 
-import { gqlId, gqlString } from '../types/types.js';
+import { gqlId, gqlString } from '../types/gqlTypes.js';
 
 export const Post = new GraphQLObjectType({
   name: 'Post',
