@@ -53,7 +53,7 @@ await test('gql-queries', async (t) => {
         }
     }`,
     });
-    console.log('////1');
+
     t.ok(data.memberTypes.length === memberTypes.length);
     t.ok(data.posts.length === posts.length);
     t.ok(data.users.length === users.length);
@@ -97,7 +97,7 @@ await test('gql-queries', async (t) => {
         postId: post1.id,
       },
     });
-    console.log('////2');
+
     t.ok(data.memberType.id === MemberTypeId.BASIC);
     t.ok(data.post.id === post1.id);
     t.ok(data.user.id === user1.id);
@@ -134,7 +134,7 @@ await test('gql-queries', async (t) => {
         postId: randomUUID(),
       },
     });
-    console.log('////3');
+
     t.ok(!errors);
     t.ok(data.post === null);
     t.ok(data.profile === null);
@@ -186,7 +186,7 @@ await test('gql-queries', async (t) => {
           }
       }`,
     });
-    console.log('////4');
+
     t.ok(dataUser.user.id === user1.id);
     t.ok(dataUser.user.profile.id === profile1.id);
     t.ok(dataUser.user.profile.memberType?.id === MemberTypeId.BASIC);
@@ -230,7 +230,7 @@ await test('gql-queries', async (t) => {
         userId: user1.id,
       },
     });
-    console.log('////5');
+
     t.ok(data.user.userSubscribedTo[0].id === user2.id);
     t.ok(data.user.userSubscribedTo[0].name === user2.name);
     t.ok(data.user.userSubscribedTo[0].subscribedToUser[0].id === user1.id);

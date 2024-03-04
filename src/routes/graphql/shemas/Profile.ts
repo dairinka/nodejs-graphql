@@ -1,7 +1,7 @@
 import { GraphQLObjectType } from 'graphql';
 
 import { MemberTypeId, gqlBoolean, gqlId, gqlInt } from '../types/gqlTypes.js';
-import { Context, IProfile, IUser } from '../types/types.js';
+import { Context, IProfile } from '../types/types.js';
 import { User } from './User.js';
 import { MemberType } from './MemberType.js';
 

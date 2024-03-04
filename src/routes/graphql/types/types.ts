@@ -11,8 +11,10 @@ export interface IAuthor {
   authorId: string;
 }
 
-export interface IUser extends CreateUser {
+export interface IUser {
   id: string;
+  name: string;
+  balance: number;
   profile?: IProfile;
   post?: IPost[];
   userSubscribedTo?: IAuthor[];

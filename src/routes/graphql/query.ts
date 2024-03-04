@@ -56,11 +56,11 @@ export const Query = new GraphQLObjectType({
               subscribedToUser,
             },
           });
-          const result = users.forEach((user) => {
+          users.forEach((user) => {
             userLoader.prime(user.id, user);
           });
-          console.log('users result', result);
-          return result;
+          console.log('users result', users);
+          return users;
         } catch (err) {
           console.log(err);
         }
