@@ -5,6 +5,11 @@ import { Profile } from './shemas/Profile.js';
 import { User } from './shemas/User.js';
 import { MemberTypeId, gqlId } from './types/gqlTypes.js';
 import { Context, IUser, MemberTypeIdType } from './types/types.js';
+import {
+  ResolveTree,
+  parseResolveInfo,
+  simplifyParsedResolveInfoFragmentWithType,
+} from 'graphql-parse-resolve-info';
 
 export const Query = new GraphQLObjectType({
   name: 'Query',
@@ -14,8 +19,7 @@ export const Query = new GraphQLObjectType({
       args: {
         id: { type: gqlId },
       },
-
-      resolve: async (_source, args: { id: string }, { db }: Context) => {
+      resolve: async (_source, args: IUser, { db }: Context) => {
         console.log('/// query user');
         console.log('resolve users', db);
         return await db.user.findUnique({
@@ -27,15 +31,36 @@ export const Query = new GraphQLObjectType({
     },
     users: {
       type: new GraphQLList(User),
-      // resolve: async (_source, _args, { db }: Context) => {
-      //   console.log('/// query usersss');
-      //   console.log('resolve users', db);
-      //   // try {
-      //   //   return await db.user.findMany();
-      //   // } catch (err) {
-      //   //   console.log(err);
-      //   // }
-      // },
+      resolve: async (
+        _source,
+        _args,
+        { db, userLoader }: Context,
+        info: GraphQLResolveInfo,
+      ) => {
+        const parseInfo = parseResolveInfo(info) as ResolveTree;
+        const { fields } = simplifyParsedResolveInfoFragmentWithType(
+          parseInfo,
+          new GraphQLList(User),
+        );
+        const userSubscribedTo = 'userSubscribedTo' in fields;
+        const subscribedToUser = 'subscribedToUser' in fields;
+        console.log('/// query usersss');
+        console.log('parseInfo', fields);
+        console.log('resolve users', db);
+        try {
+          const users = await db.user.findMany({
+            include: {
+              userSubscribedTo,
+              subscribedToUser,
+            },
+          });
+          return users.forEach((user) => {
+            userLoader.prime(user.id, user);
+          });
+        } catch (err) {
+          console.log(err);
+        }
+      },
     },
     memberType: {
       type: MemberType,

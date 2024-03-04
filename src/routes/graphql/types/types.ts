@@ -31,7 +31,7 @@ export interface DataLoaders {
 
 export type MemberTypeIdType = 'basic' | 'business';
 export interface IMemberType {
-  id: string;
+  id: MemberTypeIdType;
   discount: number;
   postLimitPerMonth: number;
 }
