@@ -14,9 +14,7 @@ export const User: GraphQLObjectType<IUser, Context> = new GraphQLObjectType({
       type: Profile,
       resolve: async (source: IUser, _args, { profileByUserLoader }: Context) => {
         try {
-          const result = await profileByUserLoader.load(source.id);
-          console.log('profile in user', result);
-          return result;
+          return await profileByUserLoader.load(source.id);
         } catch (err) {
           console.log(err);
         }
@@ -26,9 +24,7 @@ export const User: GraphQLObjectType<IUser, Context> = new GraphQLObjectType({
       type: new GraphQLList(Post),
       resolve: async (source: IUser, _args, { postsByAuthorLoader }: Context) => {
         try {
-          const result = await postsByAuthorLoader.load(source.id);
-          console.log('posts: in user', result);
-          return result;
+          return await postsByAuthorLoader.load(source.id);
         } catch (err) {
           console.log(err);
         }
@@ -36,15 +32,9 @@ export const User: GraphQLObjectType<IUser, Context> = new GraphQLObjectType({
     },
     userSubscribedTo: {
       type: new GraphQLList(User),
-      resolve: async (source: IUser, _args, { userLoader }: Context) => {
+      resolve: async (source: IUser, _args, { userSubscribedById }: Context) => {
         try {
-          if (source.userSubscribedTo) {
-            const result = await userLoader.loadMany(
-              source.userSubscribedTo.map(({ authorId }) => authorId),
-            );
-            console.log(' userSubscribedTo in user', result);
-            return result;
-          }
+          return await userSubscribedById.load(source.id);
         } catch (err) {
           console.log(err);
         }
@@ -52,15 +42,9 @@ export const User: GraphQLObjectType<IUser, Context> = new GraphQLObjectType({
     },
     subscribedToUser: {
       type: new GraphQLList(User),
-      resolve: async (source: IUser, _args, { userLoader }: Context) => {
+      resolve: async (source: IUser, _args, { subscribedToUserById }: Context) => {
         try {
-          if (source.subscribedToUser) {
-            const result = await userLoader.loadMany(
-              source.subscribedToUser.map(({ subscriberId }) => subscriberId),
-            );
-            console.log(' userSubscribedTo in user', result);
-            return result;
-          }
+          return await subscribedToUserById.load(source.id);
         } catch (err) {
           console.log(err);
         }

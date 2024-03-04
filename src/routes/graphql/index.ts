@@ -23,7 +23,6 @@ const plugin: FastifyPluginAsyncTypebox = async (fastify) => {
 
       const err = validate(commonSchema, parse(query), [depthLimit(DEPTHLIMIT)]);
       if (Array.isArray(err) && err.length > 0) return { errors: err };
-      //console.log('prisma', prisma);
       const res = await graphql({
         schema: commonSchema,
         source: query,
@@ -34,7 +33,6 @@ const plugin: FastifyPluginAsyncTypebox = async (fastify) => {
         },
       });
 
-      console.log('response', res);
       return res;
     },
   });

@@ -46,11 +46,58 @@ const profilesByMemberTypeLoader = (prisma: PrismaClient) => {
     return ids.map((id) => profiles.filter((profile) => profile.memberTypeId === id));
   });
 };
+const userSubscribedById = (prisma: PrismaClient) => {
+  return new DataLoader(async (ids: readonly string[]) => {
+    const userSubscribed = await prisma.user.findMany({
+      where: {
+        subscribedToUser: {
+          some: {
+            subscriberId: {
+              in: [...ids],
+            },
+          },
+        },
+      },
+      include: {
+        subscribedToUser: true,
+      },
+    });
 
+    return ids.map((id) =>
+      userSubscribed.filter((user) =>
+        user.subscribedToUser.some((el) => el.subscriberId === id),
+      ),
+    );
+  });
+};
+export const subscribedToUserById = (prisma: PrismaClient) => {
+  return new DataLoader(async (ids: readonly string[]) => {
+    const subscribedToUser = await prisma.user.findMany({
+      where: {
+        userSubscribedTo: {
+          some: {
+            authorId: { in: [...ids] },
+          },
+        },
+      },
+      include: {
+        userSubscribedTo: true,
+      },
+    });
+
+    return ids.map((id) =>
+      subscribedToUser.filter((user) =>
+        user.userSubscribedTo.some((el) => el.authorId === id),
+      ),
+    );
+  });
+};
 export const createDataLoaders = (prisma: PrismaClient): IDataLoaders => ({
   userLoader: userLoader(prisma),
   memberTypeLoader: memberTypeLoader(prisma),
   postsByAuthorLoader: postsByAuthorLoader(prisma),
   profileByUserLoader: profileByUserLoader(prisma),
   profilesByMemberTypeLoader: profilesByMemberTypeLoader(prisma),
+  userSubscribedById: userSubscribedById(prisma),
+  subscribedToUserById: subscribedToUserById(prisma),
 });

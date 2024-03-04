@@ -20,15 +20,15 @@ export const Query = new GraphQLObjectType({
         id: { type: gqlId },
       },
       resolve: async (_source, args: IUser, { db }: Context) => {
-        console.log('/// query user');
-
-        const result = await db.user.findUnique({
-          where: {
-            id: args.id,
-          },
-        });
-        console.log('result user', result);
-        return result;
+        try {
+          return await db.user.findUnique({
+            where: {
+              id: args.id,
+            },
+          });
+        } catch (err) {
+          console.log(err);
+        }
       },
     },
     users: {
@@ -36,7 +36,7 @@ export const Query = new GraphQLObjectType({
       resolve: async (
         _source,
         _args,
-        { db, userLoader }: Context,
+        { db, userSubscribedById, subscribedToUserById }: Context,
         info: GraphQLResolveInfo,
       ) => {
         const parseInfo = parseResolveInfo(info) as ResolveTree;
@@ -46,9 +46,7 @@ export const Query = new GraphQLObjectType({
         );
         const userSubscribedTo = 'userSubscribedTo' in fields;
         const subscribedToUser = 'subscribedToUser' in fields;
-        console.log('/// query usersss');
-        console.log('parseInfo', fields);
-        //console.log('resolve users', db);
+
         try {
           const users = await db.user.findMany({
             include: {
@@ -57,9 +55,28 @@ export const Query = new GraphQLObjectType({
             },
           });
           users.forEach((user) => {
-            userLoader.prime(user.id, user);
+            if (userSubscribedTo) {
+              userSubscribedById.prime(
+                user.id,
+                users.filter((currentUser) =>
+                  currentUser.userSubscribedTo.some(
+                    (el) => el.authorId === currentUser.id,
+                  ),
+                ),
+              );
+            }
+
+            if (subscribedToUser) {
+              subscribedToUserById.prime(
+                user.id,
+                users.filter((currentUser) =>
+                  currentUser.subscribedToUser.some(
+                    (el) => el.subscriberId === currentUser.id,
+                  ),
+                ),
+              );
+            }
           });
-          console.log('users result', users);
           return users;
         } catch (err) {
           console.log(err);
@@ -72,15 +89,12 @@ export const Query = new GraphQLObjectType({
         id: { type: MemberTypeId },
       },
       resolve: async (_source, args: { id: MemberTypeIdType }, { db }: Context) => {
-        console.log('/// memberType');
         try {
-          const result = await db.memberType.findFirst({
+          return await db.memberType.findFirst({
             where: {
               id: args.id,
             },
           });
-          console.log('memberType result', result);
-          return result;
         } catch (err) {
           console.log(err);
         }
@@ -90,11 +104,8 @@ export const Query = new GraphQLObjectType({
     memberTypes: {
       type: new GraphQLList(MemberType),
       resolve: async (_source, _args, { db }: Context) => {
-        console.log('/// query memberTypes');
         try {
-          const result = await db.memberType.findMany();
-          console.log('memberTypes result', result);
-          return result;
+          return await db.memberType.findMany();
         } catch (err) {
           console.log(err);
         }
@@ -106,24 +117,22 @@ export const Query = new GraphQLObjectType({
         id: { type: gqlId },
       },
       resolve: async (_source, args: { id: string }, { db }: Context) => {
-        console.log('/// query post');
-        const result = await db.post.findUnique({
-          where: {
-            id: args.id,
-          },
-        });
-        console.log('post result', result);
-        return result;
+        try {
+          return await db.post.findUnique({
+            where: {
+              id: args.id,
+            },
+          });
+        } catch (err) {
+          console.log(err);
+        }
       },
     },
     posts: {
       type: new GraphQLList(Post),
       resolve: async (_source, _args, { db }: Context) => {
-        console.log('/// query posts');
         try {
-          const result = await db.post.findMany();
-          console.log('posts result', result);
-          return result;
+          return await db.post.findMany();
         } catch (err) {
           console.log(err);
         }
@@ -135,24 +144,22 @@ export const Query = new GraphQLObjectType({
         id: { type: gqlId },
       },
       resolve: async (_source, args: { id: string }, { db }: Context) => {
-        console.log('/// query profile');
-        const result = await db.profile.findUnique({
-          where: {
-            id: args.id,
-          },
-        });
-        console.log('profile result', result);
-        return result;
+        try {
+          return await db.profile.findUnique({
+            where: {
+              id: args.id,
+            },
+          });
+        } catch (err) {
+          console.log(err);
+        }
       },
     },
     profiles: {
       type: new GraphQLList(Profile),
       resolve: async (_source, _args, { db }: Context) => {
-        console.log('/// query profiles');
         try {
-          const result = await db.profile.findMany();
-          console.log('profile result', result);
-          return result;
+          return await db.profile.findMany();
         } catch (err) {
           console.log(err);
         }

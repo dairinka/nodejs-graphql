@@ -31,6 +31,8 @@ export interface IDataLoaders {
   postsByAuthorLoader: DataLoader<string, IPost[] | undefined, string>;
   profileByUserLoader: DataLoader<string, IProfile | undefined, string>;
   profilesByMemberTypeLoader: DataLoader<string, IProfile[] | undefined, string>;
+  userSubscribedById: DataLoader<string, IUser[], string>;
+  subscribedToUserById: DataLoader<string, IUser[], string>;
 }
 
 export type MemberTypeIdType = 'basic' | 'business';
