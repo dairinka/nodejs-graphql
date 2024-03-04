@@ -21,12 +21,14 @@ export const Query = new GraphQLObjectType({
       },
       resolve: async (_source, args: IUser, { db }: Context) => {
         console.log('/// query user');
-        console.log('resolve users', db);
-        return await db.user.findUnique({
+
+        const result = await db.user.findUnique({
           where: {
             id: args.id,
           },
         });
+        console.log('result user', result);
+        return result;
       },
     },
     users: {
@@ -46,7 +48,7 @@ export const Query = new GraphQLObjectType({
         const subscribedToUser = 'subscribedToUser' in fields;
         console.log('/// query usersss');
         console.log('parseInfo', fields);
-        console.log('resolve users', db);
+        //console.log('resolve users', db);
         try {
           const users = await db.user.findMany({
             include: {
@@ -54,9 +56,11 @@ export const Query = new GraphQLObjectType({
               subscribedToUser,
             },
           });
-          return users.forEach((user) => {
+          const result = users.forEach((user) => {
             userLoader.prime(user.id, user);
           });
+          console.log('users result', result);
+          return result;
         } catch (err) {
           console.log(err);
         }
@@ -68,12 +72,15 @@ export const Query = new GraphQLObjectType({
         id: { type: MemberTypeId },
       },
       resolve: async (_source, args: { id: MemberTypeIdType }, { db }: Context) => {
+        console.log('/// memberType');
         try {
-          return await db.memberType.findFirst({
+          const result = await db.memberType.findFirst({
             where: {
               id: args.id,
             },
           });
+          console.log('memberType result', result);
+          return result;
         } catch (err) {
           console.log(err);
         }
@@ -83,8 +90,11 @@ export const Query = new GraphQLObjectType({
     memberTypes: {
       type: new GraphQLList(MemberType),
       resolve: async (_source, _args, { db }: Context) => {
+        console.log('/// query memberTypes');
         try {
-          return await db.memberType.findMany();
+          const result = await db.memberType.findMany();
+          console.log('memberTypes result', result);
+          return result;
         } catch (err) {
           console.log(err);
         }
@@ -96,18 +106,24 @@ export const Query = new GraphQLObjectType({
         id: { type: gqlId },
       },
       resolve: async (_source, args: { id: string }, { db }: Context) => {
-        return await db.post.findUnique({
+        console.log('/// query post');
+        const result = await db.post.findUnique({
           where: {
             id: args.id,
           },
         });
+        console.log('post result', result);
+        return result;
       },
     },
     posts: {
       type: new GraphQLList(Post),
       resolve: async (_source, _args, { db }: Context) => {
+        console.log('/// query posts');
         try {
-          return await db.post.findMany();
+          const result = await db.post.findMany();
+          console.log('posts result', result);
+          return result;
         } catch (err) {
           console.log(err);
         }
@@ -119,18 +135,24 @@ export const Query = new GraphQLObjectType({
         id: { type: gqlId },
       },
       resolve: async (_source, args: { id: string }, { db }: Context) => {
-        return await db.profile.findUnique({
+        console.log('/// query profile');
+        const result = await db.profile.findUnique({
           where: {
             id: args.id,
           },
         });
+        console.log('profile result', result);
+        return result;
       },
     },
     profiles: {
       type: new GraphQLList(Profile),
       resolve: async (_source, _args, { db }: Context) => {
+        console.log('/// query profiles');
         try {
-          return await db.profile.findMany();
+          const result = await db.profile.findMany();
+          console.log('profile result', result);
+          return result;
         } catch (err) {
           console.log(err);
         }

@@ -13,20 +13,22 @@ export interface IAuthor {
 
 export interface IUser extends CreateUser {
   id: string;
+  profile?: IProfile;
+  post?: IPost[];
   userSubscribedTo?: IAuthor[];
   subscribedToUser?: IAuthor[];
 }
 
-export interface Context extends DataLoaders {
+export interface Context extends IDataLoaders {
   db: PrismaClient;
 }
 
-export interface DataLoaders {
-  userLoader: DataLoader<string, IUser>;
-  memberTypeLoader: DataLoader<MemberTypeIdType, IMemberType>;
-  postsByAuthorLoader: DataLoader<string, IPost[]>;
-  profileByUserLoader: DataLoader<string, IProfile>;
-  profilesByMemberTypeLoader: DataLoader<string, IProfile[]>;
+export interface IDataLoaders {
+  userLoader: DataLoader<string, IUser | undefined, string>;
+  memberTypeLoader: DataLoader<MemberTypeIdType, IMemberType | undefined, string>;
+  postsByAuthorLoader: DataLoader<string, IPost[] | undefined, string>;
+  profileByUserLoader: DataLoader<string, IProfile | undefined, string>;
+  profilesByMemberTypeLoader: DataLoader<string, IProfile[] | undefined, string>;
 }
 
 export type MemberTypeIdType = 'basic' | 'business';

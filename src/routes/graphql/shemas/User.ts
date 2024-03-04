@@ -14,7 +14,9 @@ export const User: GraphQLObjectType<IUser, Context> = new GraphQLObjectType({
       type: Profile,
       resolve: async (source: IUser, _args, { profileByUserLoader }: Context) => {
         try {
-          return await profileByUserLoader.load(source.id);
+          const result = await profileByUserLoader.load(source.id);
+          console.log('profile in user', result);
+          return result;
         } catch (err) {
           console.log(err);
         }
@@ -24,7 +26,9 @@ export const User: GraphQLObjectType<IUser, Context> = new GraphQLObjectType({
       type: new GraphQLList(Post),
       resolve: async (source: IUser, _args, { postsByAuthorLoader }: Context) => {
         try {
-          return await postsByAuthorLoader.load(source.id);
+          const result = await postsByAuthorLoader.load(source.id);
+          console.log('posts: in user', result);
+          return result;
         } catch (err) {
           console.log(err);
         }
@@ -35,9 +39,11 @@ export const User: GraphQLObjectType<IUser, Context> = new GraphQLObjectType({
       resolve: async (source: IUser, _args, { userLoader }: Context) => {
         try {
           if (source.userSubscribedTo) {
-            return await userLoader.loadMany(
+            const result = await userLoader.loadMany(
               source.userSubscribedTo.map(({ authorId }) => authorId),
             );
+            console.log(' userSubscribedTo in user', result);
+            return result;
           }
         } catch (err) {
           console.log(err);
@@ -49,9 +55,11 @@ export const User: GraphQLObjectType<IUser, Context> = new GraphQLObjectType({
       resolve: async (source: IUser, _args, { userLoader }: Context) => {
         try {
           if (source.subscribedToUser) {
-            return await userLoader.loadMany(
+            const result = await userLoader.loadMany(
               source.subscribedToUser.map(({ subscriberId }) => subscriberId),
             );
+            console.log(' userSubscribedTo in user', result);
+            return result;
           }
         } catch (err) {
           console.log(err);
